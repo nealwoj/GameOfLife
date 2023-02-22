@@ -159,16 +159,6 @@ public class World : MonoBehaviour
         if (y >= cols)
             y = 0;
 
-        //if (x < 0f)
-        //    x += rows;
-        //if (x >= rows)
-        //    x %= rows;
-
-        //if (y < 0f)
-        //    y += cols;
-        //if (y >= 0f)
-        //    y %= cols;
-
         currentBuffer[x, y] = val;
     }
 
