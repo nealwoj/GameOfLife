@@ -15,6 +15,12 @@ public class Rules : MonoBehaviour
 
     public void Step()
     {
+        JohnConway();
+        //more rules
+    }
+
+    public void JohnConway()
+    {
         for (int x = 0; x < world.rows; x++)
         {
             for (int y = 0; y < world.cols; y++)

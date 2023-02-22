@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 //using System.Numerics;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class World : MonoBehaviour
 {
@@ -10,39 +11,44 @@ public class World : MonoBehaviour
     public bool[,] currentBuffer, nextBuffer;
 
     public bool init;
-    public float bufferDelay = 1f;
     public GameObject _alive, _dead;
-    public int percentDead = 50;
 
     private Rules rules;
-    private float timeCount;
+    private float timeCount, bufferDelay;
     private bool timer;
     private List<GameObject> grid;
 
     [HideInInspector]
     public int vertical, horizontal, rows, cols;
 
+    //UI
+    public Slider sizeSlider, delaySlider, fillSlider;
+
     // Start is called before the first frame update
     void Start()
-    {
-        Init();
-    }
-
-    public void Init()
     {
         //rule system - John Conway
         rules = gameObject.GetComponent<Rules>();
 
-        //grid
-        rows = 20;
-        cols = 20;
+        timer = false;
+        grid = new List<GameObject>();
+        GenerateGrid((int)sizeSlider.value, (int)sizeSlider.value);
+
+        init = true;
+    }
+
+    public void GenerateGrid(int r, int c)
+    {
+        ClearGrid();
+
+        rows = r;
+        cols = c;
+
+        Camera.main.orthographicSize = rows / 2;
         vertical = (int)Camera.main.orthographicSize;
         horizontal = vertical * (Screen.width / Screen.height);
 
-        grid = new List<GameObject>();
         Randomize();
-
-        init = true;
     }
 
     // Update is called once per frame
@@ -99,6 +105,8 @@ public class World : MonoBehaviour
     {
         if (init && timer)
         {
+            bufferDelay = delaySlider.value;
+
             if (timeCount > bufferDelay)
             {
                 currentBuffer = nextBuffer;
@@ -154,19 +162,8 @@ public class World : MonoBehaviour
         currentBuffer[x, y] = val;
     }
 
-    //buttons
-    public void StartButton()
-    {
-        timer = true;
-    }
-    public void PauseButton()
-    {
-        timer = false;
-    }
     public void Randomize()
     {
-        timer = false;
-
         currentBuffer = new bool[rows, cols];
         nextBuffer = new bool[rows, cols];
 
@@ -175,11 +172,34 @@ public class World : MonoBehaviour
             for (int y = 0; y < cols; y++)
             {
                 int ran = UnityEngine.Random.Range(0, 10);
-                if (ran > (percentDead / 10))
+                if (ran > ((int)fillSlider.value) / 10)
                     currentBuffer[x, y] = true;
                 else
                     currentBuffer[x, y] = false;
             }
         }
+    }
+
+    //UI
+    public void StartButton()
+    {
+        timer = true;
+    }
+    public void PauseButton()
+    {
+        timer = false;
+    }
+    public void RandomizeButton()
+    {
+        timer = false;
+        Randomize();
+    }
+    public void QuitButton()
+    {
+        Application.Quit();
+    }
+    public void OnSizeChanged()
+    {
+        GenerateGrid((int)sizeSlider.value, (int)sizeSlider.value);
     }
 }
