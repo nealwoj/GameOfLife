@@ -26,6 +26,7 @@ public class Rules : MonoBehaviour
             for (int y = 0; y < world.cols; y++)
             {
                 int neighbors = GetNeighbors(x, y);
+                Debug.Log(neighbors);
 
                 if (world.Get(x, y))
                 {

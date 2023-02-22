@@ -89,14 +89,14 @@ public class World : MonoBehaviour
         {
             GameObject go = Instantiate(_alive);
             go.transform.SetParent(GameObject.Find("Grid").transform);
-            go.transform.position = new Vector3(x - (horizontal - 0.5f), y - (vertical - 0.5f), 0f);
+            go.transform.position = new Vector3(x - horizontal, y - vertical, 0f);
             return go;
         }
         else
         {
             GameObject go = Instantiate(_dead);
             go.transform.SetParent(GameObject.Find("Grid").transform);
-            go.transform.position = new Vector3(x - (horizontal - 0.5f), y - (vertical - 0.5f), 0f);
+            go.transform.position = new Vector3(x - horizontal, y - vertical, 0f);
             return go;
         }
     }
@@ -124,12 +124,12 @@ public class World : MonoBehaviour
         if (x < 0f)
             x += rows;
         if (x >= rows)
-            x %= rows;
+            x = 0;
 
         if (y < 0f)
             y += cols;
-        if (y >= 0f)
-            y %= cols;
+        if (y >= cols)
+            y = 0;
 
         return currentBuffer[x, y];
     }
@@ -138,12 +138,12 @@ public class World : MonoBehaviour
         if (x < 0f)
             x += rows;
         if (x >= rows)
-            x %= rows;
+            x = 0;
 
         if (y < 0f)
             y += cols;
-        if (y >= 0f)
-            y %= cols;
+        if (y >= cols)
+            y = 0;
 
         nextBuffer[x, y] = val;
     }
@@ -152,12 +152,22 @@ public class World : MonoBehaviour
         if (x < 0f)
             x += rows;
         if (x >= rows)
-            x %= rows;
+            x = 0;
 
         if (y < 0f)
             y += cols;
-        if (y >= 0f)
-            y %= cols;
+        if (y >= cols)
+            y = 0;
+
+        //if (x < 0f)
+        //    x += rows;
+        //if (x >= rows)
+        //    x %= rows;
+
+        //if (y < 0f)
+        //    y += cols;
+        //if (y >= 0f)
+        //    y %= cols;
 
         currentBuffer[x, y] = val;
     }
