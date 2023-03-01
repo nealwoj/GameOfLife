@@ -37,6 +37,16 @@ public class World : MonoBehaviour
         init = true;
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        //game loop - update next buffer, then swap to the next buffer
+        rules.Step();
+        SwapBuffers();
+    }
+
+    #region Generating Grid
+    //generate a grid based on rows and cols
     public void GenerateGrid(int r, int c)
     {
         ClearGrid();
@@ -44,22 +54,36 @@ public class World : MonoBehaviour
         rows = r;
         cols = c;
 
+        //grid offset based on camera size
         Camera.main.orthographicSize = rows / 2;
         vertical = (int)Camera.main.orthographicSize;
         horizontal = vertical * (Screen.width / Screen.height);
 
         Randomize();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //game loop - update next buffer, then swap to the next buffer, then draw grid from the new buffer
-        rules.Step();
-        SwapBuffers();
         DrawGrid();
     }
+    //randomize grid on current buffer
+    public void Randomize()
+    {
+        currentBuffer = new bool[rows, cols];
+        nextBuffer = new bool[rows, cols];
 
+        for (int x = 0; x < rows; x++)
+        {
+            for (int y = 0; y < cols; y++)
+            {
+                int ran = UnityEngine.Random.Range(0, 10);
+                if (ran > ((int)fillSlider.value) / 10)
+                    currentBuffer[x, y] = true;
+                else
+                    currentBuffer[x, y] = false;
+            }
+        }
+    }
+    #endregion
+
+    #region Drawing Grid
+    //draw new grid
     public void DrawGrid()
     {
         ClearGrid();
@@ -82,7 +106,6 @@ public class World : MonoBehaviour
 
         grid.Clear();
     }
-
     public GameObject DrawSprite(int x, int y, bool val)
     {
         if (val)
@@ -100,7 +123,9 @@ public class World : MonoBehaviour
             return go;
         }
     }
+    #endregion
 
+    #region Buffer Data
     public void SwapBuffers()
     {
         if (init && timer)
@@ -111,14 +136,14 @@ public class World : MonoBehaviour
             {
                 currentBuffer = nextBuffer;
                 nextBuffer = new bool[rows, cols];
-
                 timeCount = 0f;
+
+                DrawGrid();
             }
             else
                 timeCount += Time.deltaTime;
         }
     }
-
     public bool Get(int x, int y)
     {
         if (x < 0f)
@@ -161,26 +186,9 @@ public class World : MonoBehaviour
 
         currentBuffer[x, y] = val;
     }
+    #endregion
 
-    public void Randomize()
-    {
-        currentBuffer = new bool[rows, cols];
-        nextBuffer = new bool[rows, cols];
-
-        for (int x = 0; x < rows; x++)
-        {
-            for (int y = 0; y < cols; y++)
-            {
-                int ran = UnityEngine.Random.Range(0, 10);
-                if (ran > ((int)fillSlider.value) / 10)
-                    currentBuffer[x, y] = true;
-                else
-                    currentBuffer[x, y] = false;
-            }
-        }
-    }
-
-    //UI
+    #region UI
     public void StartButton()
     {
         timer = true;
@@ -202,4 +210,5 @@ public class World : MonoBehaviour
     {
         GenerateGrid((int)sizeSlider.value, (int)sizeSlider.value);
     }
+    #endregion
 }
