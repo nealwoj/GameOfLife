@@ -49,7 +49,7 @@ public class World : MonoBehaviour
     //generate a grid based on rows and cols
     public void GenerateGrid(int r, int c)
     {
-        ClearGrid();
+        //ClearGrid();
 
         rows = r;
         cols = c;
@@ -134,6 +134,8 @@ public class World : MonoBehaviour
 
             if (timeCount > bufferDelay)
             {
+                //rules.Step();
+
                 currentBuffer = nextBuffer;
                 nextBuffer = new bool[rows, cols];
                 timeCount = 0f;
@@ -200,7 +202,7 @@ public class World : MonoBehaviour
     public void RandomizeButton()
     {
         timer = false;
-        Randomize();
+        GenerateGrid((int)sizeSlider.value, (int)sizeSlider.value);
     }
     public void QuitButton()
     {
